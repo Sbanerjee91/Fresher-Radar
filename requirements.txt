@@ -1,0 +1,5 @@
+Django>=6.1
+requests>=2.32
+gunicorn>=23.0        # production web server
+whitenoise>=6.8       # serves static files in production
+psycopg[binary]>=3.2  # PostgreSQL (only used when DATABASE_URL is set)

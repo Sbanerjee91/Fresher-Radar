@@ -1,0 +1,21 @@
+# Render Blueprint: the live website. The nightly sync runs from GitHub Actions (see .github/workflows),
+# so the site can sleep on the free plan without ever missing a day.
+services:
+  - type: web
+    name: fresher-radar
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
+    startCommand: gunicorn fresher_radar.wsgi --bind 0.0.0.0:$PORT --workers 2
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: AUTO_SYNC
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false   # paste your Neon / Supabase connection string in the Render dashboard

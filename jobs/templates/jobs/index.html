@@ -1,0 +1,100 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fresher Radar | Fresher &amp; intern jobs in India, tagged by AI</title>
+  <meta name="description" content="Fresher and internship jobs across India, de-duplicated, tagged by role and city with an LLM, and refreshed every night.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Nunito:ital,wght@0,500;0,700;0,800;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'jobs/app.css' %}">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/" aria-label="Fresher Radar home">
+      <svg class="radar" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" fill="#fff" stroke="currentColor" stroke-width="3"/>
+        <circle cx="20" cy="20" r="9" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path class="sweep" d="M20 20 L20 3 A17 17 0 0 1 35 12 Z" fill="#ff5fa8" opacity=".85"/>
+        <circle cx="26" cy="13" r="2.4" fill="currentColor"/>
+      </svg>
+      <span>Fresher Radar</span>
+    </a>
+    <div class="top-actions">
+      <span class="sync-pill{% if sync_overdue %} overdue{% endif %}">
+        <i class="dot" aria-hidden="true"></i>
+        {% if not last_sync %}Waiting for first sync{% elif sync_overdue %}Sync overdue &middot; last {{ last_sync|date:"M j, g:i A" }}{% else %}Synced {{ last_sync|date:"M j, g:i A" }}{% endif %}
+      </span>
+      <sakuga-button id="savedBtn" variant="secondary">Saved <span id="savedCount">0</span></sakuga-button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <span class="sfx sfx-a" aria-hidden="true">ドン!</span>
+    <span class="sfx sfx-b" aria-hidden="true">新卒</span>
+    <div class="hero-copy">
+      <p class="eyebrow">Entry-level &middot; Intern &middot; Graduate</p>
+      <h1>Your first job,<br>on the <em>radar.</em></h1>
+      <p class="lede">Fresher and intern roles across India. Duplicates removed, every post tagged by role and city with AI, refreshed every night while you sleep.
+        <sakuga-tooltip label="How syncing works" text="Auto-sync runs daily just after 12:00 AM. Next sync: {{ next_sync|date:'M j, g:i A' }}."></sakuga-tooltip></p>
+    </div>
+    <dl class="stats">
+      <div class="stat"><dt>India jobs</dt><dd data-count="{{ total }}">{{ total }}</dd></div>
+      <div class="stat pink"><dt>New today</dt><dd data-count="{{ new_today }}">{{ new_today }}</dd></div>
+      <div class="stat"><dt>Cities</dt><dd data-count="{{ city_count }}">{{ city_count }}</dd></div>
+    </dl>
+  </section>
+
+  <main>
+    <section class="panel search" aria-label="Search jobs">
+      <div class="fields">
+        <sakuga-input id="q" label="Role or company" type="search" placeholder="Python, intern, Razorpay…"></sakuga-input>
+        <sakuga-input id="loc" label="City or area" placeholder="Pune, Gujarat, Remote…"></sakuga-input>
+        <sakuga-button id="searchBtn">Search</sakuga-button>
+      </div>
+
+      <div class="tabs-row">
+        <sakuga-tabs id="sourceTabs" label="Job source">
+          <option value="all">All</option>
+          {% for s in sources %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+        </sakuga-tabs>
+      </div>
+
+      <div class="chips" id="roleChips">
+        <span class="chips-label">Role</span>
+        {% for r in roles %}<button class="chip" data-role="{{ r.name }}">{{ r.name }} <small>{{ r.count }}</small></button>{% endfor %}
+      </div>
+      <div class="chips" id="cityChips">
+        <span class="chips-label">City</span>
+        {% for c in cities %}<button class="chip" data-city="{{ c.name }}">{{ c.name }} <small>{{ c.count }}</small></button>{% endfor %}
+        <div class="checks"><sakuga-checkbox id="newOnly">New in last 24h</sakuga-checkbox></div>
+      </div>
+    </section>
+
+    <div class="meta">
+      <p id="resultInfo" aria-live="polite"></p>
+      <button id="resetBtn" class="linkish" hidden>Clear filters</button>
+    </div>
+
+    <ul id="grid" class="grid"></ul>
+    <div class="more"><sakuga-button id="moreBtn" hidden>Load more jobs</sakuga-button></div>
+  </main>
+
+  <footer class="foot">
+    Fresher Radar &middot; jobs via <a href="https://www.adzuna.in" target="_blank" rel="noopener">Adzuna</a>, Jooble, Greenhouse &amp; Lever public APIs &middot; role &amp; city tags by AI &middot; UI controls by
+    <a href="https://github.com/finktheartist/sakuga-vfx" target="_blank" rel="noopener">Sakuga VFX</a> (MIT)
+  </footer>
+
+  <sakuga-toast id="toast" duration="2.2"></sakuga-toast>
+
+  {{ initial|json_script:"initial-data" }}
+  <script src="{% static 'jobs/sakuga/button.js' %}"></script>
+  <script src="{% static 'jobs/sakuga/input.js' %}"></script>
+  <script src="{% static 'jobs/sakuga/tabs.js' %}"></script>
+  <script src="{% static 'jobs/sakuga/checkbox.js' %}"></script>
+  <script src="{% static 'jobs/sakuga/toast.js' %}"></script>
+  <script src="{% static 'jobs/sakuga/tooltip.js' %}"></script>
+  <script src="{% static 'jobs/app.js' %}"></script>
+</body>
+</html>
