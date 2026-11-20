@@ -1,0 +1,23 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Local databases and collected static files
+*.sqlite3
+staticfiles/
+
+# Evaluation exports and generated data
+eval_sheet.csv
+eval_key.csv
+jobs_dataset.csv
+
+# Local tooling
+.vscode/
+.idea/
